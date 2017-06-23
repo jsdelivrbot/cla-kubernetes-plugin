@@ -15,8 +15,8 @@
         name: 'command',
         value: params.data.command || 'build',
         data: [
-            ['build'],
-            ['delete']
+            ['build','build'],
+            ['delete','delete']
         ],
         singleMode: true,
         allowBlank: false
