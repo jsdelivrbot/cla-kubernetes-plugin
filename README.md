@@ -61,3 +61,5 @@ Configuration example:
     File path: /dir/seconfdir/podConfig.yaml
     Errors: fail
     Output: 
+
+The service will return the command output.

@@ -1,5 +1,5 @@
 (function(params) {
-    var data = params.data || {};
+    var data = params.data;
 
     var serverComboBox = Cla.ui.ciCombo({
         name: 'server',
