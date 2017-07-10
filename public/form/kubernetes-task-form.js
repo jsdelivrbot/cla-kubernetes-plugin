@@ -15,8 +15,8 @@
         name: 'command',
         value: params.data.command || 'build',
         data: [
-            ['build','build'],
-            ['delete','delete']
+            ['build',_('build')],
+            ['delete',_('delete')]
         ],
         singleMode: true,
         allowBlank: false
@@ -24,7 +24,7 @@
 
     var createModePillBox = Cla.ui.pill({
         name: 'createMode',
-        fieldLabel: 'Create mode',
+        fieldLabel: _('Create mode'),
         value: params.data.createMode || 'File',
         options: ['File', 'Create', 'CI'],
         hidden: (params.data.command != 'build')
@@ -50,7 +50,7 @@
 
     var configEditor = Cla.ui.codeEditor({
         name: 'podConfig',
-        fieldLabel: 'Pod configuration',
+        fieldLabel: _('Pod configuration'),
         mode: 'Pod',
         value: params.data.podConfig || '',
         height: 300,

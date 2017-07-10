@@ -1,7 +1,7 @@
 var reg = require('cla/reg');
 
 reg.register('service.kubernete.task', {
-    name: 'Kubernetes task',
+    name: _('Kubernetes task'),
     icon: '/plugin/cla-kubernetes-plugin/icon/kubernetes.svg',
     form: '/plugin/cla-kubernetes-plugin/form/kubernetes-task-form.js',
 
@@ -27,7 +27,7 @@ reg.register('service.kubernete.task', {
 
         function remoteCommand(params, command, server, errors) {
             var output = reg.launch('service.scripting.remote', {
-                name: 'kubernetes task',
+                name: _('kubernetes task'),
                 config: {
                     errors: errors,
                     server: server,
@@ -47,7 +47,7 @@ reg.register('service.kubernete.task', {
 
         function shipFiles(server) {
             var output = reg.launch('service.fileman.ship', {
-                name: 'kubernetes task',
+                name: _('kubernetes ship'),
                 config: {
                     server: server,
                     local_path: "/opt/clarive/tmp/temp-pod.yaml",
@@ -64,7 +64,7 @@ reg.register('service.kubernete.task', {
                 filePath = configFilePath;
             } else if (createMode == "Create") {
                 if (podConfig == "") {
-                    log.fatal("Configuration is empty")
+                    log.fatal(_("Configuration is empty"));
                 }
                 fs.createFile("/opt/clarive/tmp/temp-pod.yaml", podConfig);
                 shipFiles(server);
@@ -73,22 +73,22 @@ reg.register('service.kubernete.task', {
                     mid: podCiMid + ""
                 });
                 if (!podCi) {
-                    log.fatal("Pod CI doesn't exist");
+                    log.fatal(_("Pod CI doesn't exist"));
                 }
                 podConfig = podCi.podConfig;
                 if (podConfig == "") {
-                    log.fatal("Configuration is empty")
+                    log.fatal(_("Configuration is empty"));
                 }
                 fs.createFile("/opt/clarive/tmp/temp-pod.yaml", podConfig);
                 shipFiles(server);
             } else {
-                log.fatal("No build mode selected");
+                log.fatal(_("No build mode selected"));
             }
             fullCommand = "kubectl " + command + " -f " + filePath;
         } else if (commandOption == "build") {
             fullCommand = "kubectl " + commandOption + " -f " + filePath;
         } else {
-            log.fatal("No option selected");
+            log.fatal(_("No option selected"));
         }
 
         var commandLaunch = remoteCommand(params, fullCommand, server, errors);
@@ -98,18 +98,18 @@ reg.register('service.kubernete.task', {
             if ((commandLaunch.rc != 0 && params.errors != "custom") || (params.errors == "custom" && params.rcOk != commandLaunch.rc)) {
                 parsedResponse = response.match(/ ".*" already exists/);
                 if (parsedResponse != null) {
-                    log.warn("Warning, installation already exists", response);
+                    log.warn(_("Warning, installation already exists"), response);
                 } else {
                     if (params.errors == "fail" || (params.errors == "custom" && params.rcError != commandLaunch.rc)) {
-                        log.fatal("Creation failed ", response);
+                        log.fatal(_("Creation failed "), response);
                     } else if (params.errors == "warn" || (params.errors == "custom" && params.rcWarn != commandLaunch.rc)) {
-                        log.warn("Creation failed ", response);
+                        log.warn(_("Creation failed "), response);
                     } else {
-                        log.error("Creation failed ", response);
+                        log.error(_("Creation failed "), response);
                     }
                 }
             } else {
-                log.info("Done, task finished", response);
+                log.info(_("Done, task finished"), response);
             }
         }
 

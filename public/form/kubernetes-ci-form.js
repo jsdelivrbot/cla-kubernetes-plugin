@@ -4,7 +4,7 @@
 
     var configEditor = Cla.ui.codeEditor({
         name: 'podConfig',
-        fieldLabel: 'Pod configuration',
+        fieldLabel: _('Pod configuration'),
         mode: 'Pod',
         value: params.rec.podConfig || '',
         height: 500,

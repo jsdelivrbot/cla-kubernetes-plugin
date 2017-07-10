@@ -1,0 +1,75 @@
+#: init/kubernetes.js
+msgid "Kubernetes task"
+msgstr "Tarea de Kubernetes"
+
+#: init/kubernetes.js
+msgid "kubernetes task"
+msgstr "Tarea de Kubernetes"
+
+#: init/kubernetes.js
+msgid "kubernetes ship"
+msgstr "Envío de Kubernetes"
+
+#: init/kubernetes.js
+msgid "Configuration is empty"
+msgstr "La configuración está vacía"
+
+#: init/kubernetes.js
+msgid "Pod CI doesn't exist"
+msgstr "El CI de Pod no existe"
+
+#: init/kubernetes.js
+msgid "No build mode selected"
+msgstr "Ningún modo de compilación seleccionado"
+
+#: init/kubernetes.js
+msgid "No option selected"
+msgstr "Ninguna opción seleccionada"
+
+#: init/kubernetes.js
+msgid "Warning, installation already exists"
+msgstr "Atención, la instalación ya existe"
+
+#: init/kubernetes.js
+msgid "Creation failed "
+msgstr "Creación fallida "
+
+#: init/kubernetes.js
+msgid "Done, task finished"
+msgstr "Hecho, tarea finalizada"
+
+#: public/form/kubernetes-ci-form.js public/form/kubernetes-task-form.js
+msgid "Pod configuration"
+msgstr "Configuración del Pod"
+
+#: public/form/kubernetes-task-form.js
+msgid "Server"
+msgstr "Servidor"
+
+#: public/form/kubernetes-task-form.js
+msgid "Command"
+msgstr "Comando"
+
+#: public/form/kubernetes-task-form.js
+msgid "build"
+msgstr "compilación"
+
+#: public/form/kubernetes-task-form.js
+msgid "delete"
+msgstr "borrar"
+
+#: public/form/kubernetes-task-form.js
+msgid "Create mode"
+msgstr "Modo de creación"
+
+#: public/form/kubernetes-task-form.js
+msgid "File path"
+msgstr "Ruta del archivo"
+
+#: public/form/kubernetes-task-form.js
+msgid "Pod CI"
+msgstr "CI del Pod"
+
+#: public/form/kubernetes-task-form.js
+msgid "Pod config path"
+msgstr "Ruta del archivo de configuración del Pod"
