@@ -2,6 +2,11 @@
 
 Kubernetes plugin will allow you to create new pods remotely from a Clarive instance.
 
+## What is Kubernetes
+
+Kubernetes is an open-source system for automating deployment, scaling and management of containerized applications. 
+It groups containers that make up an application into logical units for easy management and discovery.
+
 ## Requirements
 
 This plugin requires Kubernetes to be installed in the destination server to work properly.
