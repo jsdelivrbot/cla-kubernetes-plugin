@@ -4,7 +4,43 @@ reg.register('service.kubernete.task', {
     name: _('Kubernetes task'),
     icon: '/plugin/cla-kubernetes-plugin/icon/kubernetes.svg',
     form: '/plugin/cla-kubernetes-plugin/form/kubernetes-task-form.js',
-
+    rulebook: {
+        moniker: 'kubernetes_task',
+        description: _('Builds or deletes Kubernetes pods'),
+        required: [ 'server', 'command' ],
+        allow: ['server', 'command', 'create_mode', 'config_file_path', 'pod_resource',
+        'pod_config', 'delete_pod', 'remote_path', 'errors'],
+        mapper: {
+            'create_mode': 'createMode',
+            'config_file_path': 'configFilePath',
+            'pod_resource': 'podCi',
+            'pod_config': 'podConfig',
+            'delete_pod': 'deletePod',
+            'remote_path': 'remoteTempPath'
+        },
+        examples: [{
+            kubernetes_task: {
+                server: 'kubernetes_server',
+                command: 'build',
+                create_mode: 'File',
+                config_file_path: '/dir/seconfdir/podConfig.yaml'
+            }
+        },{
+            kubernetes_task: {
+                server: 'kubernetes_server',
+                command: 'build',
+                remote_path:'/tmp/',
+                create_mode: 'Resource',
+                pod_resource: 'kubernetes_resource'
+            }
+        },{
+            kubernetes_task: {
+                server: 'kubernetes_server',
+                command: 'delete',
+                delete_pod: 'configFilePath'
+            }
+        }]
+    },
     handler: function(ctx, params) {
         var ci = require("cla/ci");
         var reg = require('cla/reg');
@@ -15,7 +51,7 @@ reg.register('service.kubernete.task', {
             parsedResponse,
             response,
             command;
-        var filePath = "/tmp/temp-pod.yaml";
+        var filePath = "";
         var server = params.server || "";
         var commandOption = params.command || "";
         var createMode = params.createMode || "";
@@ -23,14 +59,19 @@ reg.register('service.kubernete.task', {
         var podConfig = params.podConfig || "";
         var configFilePath = params.configFilePath || "";
         var podName = params.deletePod || "";
+        var remoteTempPath = params.remoteTempPath || "";
         var errors = params.errors || "fail";
+        var fileName = "clarive-kubernetes-pod-" + Date.now() + ".yaml";
+        var user = params.user || "";
+        var remoteFilePath = path.join(remoteTempPath, fileName);
 
-        function remoteCommand(params, command, server, errors) {
+        function remoteCommand(params, command, server, errors, user) {
             var output = reg.launch('service.scripting.remote', {
                 name: _('kubernetes task'),
                 config: {
                     errors: errors,
                     server: server,
+                    user: user,
                     path: command,
                     output_error: params.output_error,
                     output_warn: params.output_warn,
@@ -45,30 +86,30 @@ reg.register('service.kubernete.task', {
             return output;
         }
 
-        function shipFiles(server) {
+        function shipFiles(server, filePath, remoteTempPath, user) {
             var output = reg.launch('service.fileman.ship', {
                 name: _('kubernetes ship'),
                 config: {
                     server: server,
-                    local_path: "/opt/clarive/tmp/temp-pod.yaml",
-                    remote_path: "/tmp/"
+                    user: user,
+                    local_path: filePath,
+                    remote_path: remoteTempPath
                 }
             });
-            return output;
         }
 
         if (commandOption == "build") {
             command = "create";
             errors = "silent";
             if (createMode == "File") {
-                filePath = configFilePath;
+                remoteFilePath = configFilePath;
             } else if (createMode == "Create") {
                 if (podConfig == "") {
                     log.fatal(_("Configuration is empty"));
                 }
-                fs.createFile("/opt/clarive/tmp/temp-pod.yaml", podConfig);
-                shipFiles(server);
-            } else if (createMode == "CI") {
+                fs.createFile("/tmp/" + fileName, podConfig);
+                shipFiles(server, filePath, remoteTempPath, user);
+            } else if (createMode == "Resource") {
                 var podCi = ci.findOne({
                     mid: podCiMid + ""
                 });
@@ -79,19 +120,19 @@ reg.register('service.kubernete.task', {
                 if (podConfig == "") {
                     log.fatal(_("Configuration is empty"));
                 }
-                fs.createFile("/opt/clarive/tmp/temp-pod.yaml", podConfig);
-                shipFiles(server);
+                fs.createFile("/tmp/" + fileName, podConfig);
+                shipFiles(server, filePath, remoteTempPath, user);
             } else {
                 log.fatal(_("No build mode selected"));
             }
-            fullCommand = "kubectl " + command + " -f " + filePath;
-        } else if (commandOption == "build") {
-            fullCommand = "kubectl " + commandOption + " -f " + filePath;
+            fullCommand = "kubectl " + command + " -f " + remoteFilePath;
+        } else if (commandOption == "delete") {
+            fullCommand = "kubectl " + commandOption + " -f " + podName;
         } else {
             log.fatal(_("No option selected"));
         }
 
-        var commandLaunch = remoteCommand(params, fullCommand, server, errors);
+        var commandLaunch = remoteCommand(params, fullCommand, server, errors, user);
         response = commandLaunch.output;
 
         if (commandOption = "build") {

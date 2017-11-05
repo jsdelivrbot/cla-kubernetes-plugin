@@ -10,13 +10,21 @@
         with_vars: 1
     });
 
+    var userTextField = Cla.ui.textField({
+        name: 'user',
+        fieldLabel: _('User'),
+        value: data.user || '',
+        allowBlank: true
+    });
+
+
     var commandComboBox = Cla.ui.comboBox({
         fieldLabel: _('Command'),
         name: 'command',
         value: params.data.command || 'build',
         data: [
-            ['build',_('build')],
-            ['delete',_('delete')]
+            ['build', _('build')],
+            ['delete', _('delete')]
         ],
         singleMode: true,
         allowBlank: false
@@ -26,7 +34,7 @@
         name: 'createMode',
         fieldLabel: _('Create mode'),
         value: params.data.createMode || 'File',
-        options: ['File', 'Create', 'CI'],
+        options: ['File', 'Create', 'Resource'],
         hidden: (params.data.command != 'build')
     })
 
@@ -40,7 +48,7 @@
     var podCiComboBox = Cla.ui.ciCombo({
         name: 'podCi',
         class: 'KubernetesPod',
-        fieldLabel: _('Pod CI'),
+        fieldLabel: _('Pod Resource'),
         value: params.data.podCi || '',
         allowBlank: true,
         hidden: (params.data.command != 'build' || (params.data.createMode != 'CI' && params.data.command == 'build')),
@@ -56,6 +64,14 @@
         height: 300,
         anchor: '100%',
         hidden: (params.data.command != 'build' || (params.data.createMode != 'Create' && params.data.command == 'build'))
+    });
+
+    var remoteTempPathTextField = Cla.ui.textField({
+        name: 'remoteTempPath',
+        fieldLabel: _('Remote path'),
+        value: params.data.remoteTempPath || '/tmp',
+        allowBlank: true,
+        hidden: (params.data.command == 'delete' || params.data.createMode == 'File')
     });
 
     var deleteTextField = Cla.ui.textField({
@@ -79,18 +95,24 @@
                 podCiComboBox.hide();
                 podCiComboBox.allowBlank = true;
                 configEditor.hide();
+                remoteTempPathTextField.hide();
+                remoteTempPathTextField.allowBlank = true;
             } else if (pillValue == 'Create') {
                 configFilePathTextField.hide();
                 configFilePathTextField.allowBlank = true;
                 podCiComboBox.hide();
                 podCiComboBox.allowBlank = true;
                 configEditor.show();
+                remoteTempPathTextField.show();
+                remoteTempPathTextField.allowBlank = false;
             } else {
                 configFilePathTextField.hide();
                 configFilePathTextField.allowBlank = true;
                 podCiComboBox.show();
                 podCiComboBox.allowBlank = false;
                 configEditor.hide();
+                remoteTempPathTextField.show();
+                remoteTempPathTextField.allowBlank = false;
             }
         } else {
             createModePillBox.hide();
@@ -101,6 +123,8 @@
             podCiComboBox.hide();
             podCiComboBox.allowBlank = true;
             configEditor.hide();
+            remoteTempPathTextField.hide();
+            remoteTempPathTextField.allowBlank = true;
         }
     });
 
@@ -113,18 +137,24 @@
             podCiComboBox.hide();
             podCiComboBox.allowBlank = true;
             configEditor.hide();
+            remoteTempPathTextField.hide();
+            remoteTempPathTextField.allowBlank = true;
         } else if (v == 'Create' && commandValue == 'build') {
             configFilePathTextField.hide();
             configFilePathTextField.allowBlank = true;
             podCiComboBox.hide();
             podCiComboBox.allowBlank = true;
             configEditor.show();
-        } else if (v == 'CI' && commandValue == 'build') {
+            remoteTempPathTextField.show();
+            remoteTempPathTextField.allowBlank = false;
+        } else if (v == 'Resource' && commandValue == 'build') {
             configFilePathTextField.hide();
             configFilePathTextField.allowBlank = true;
             podCiComboBox.show();
             podCiComboBox.allowBlank = false;
             configEditor.hide();
+            remoteTempPathTextField.show();
+            remoteTempPathTextField.allowBlank = false;
         }
     });
 
@@ -145,7 +175,9 @@
         layout: 'form',
         items: [
             serverComboBox,
+            userTextField,
             commandComboBox,
+            remoteTempPathTextField,
             createModePillBox,
             configFilePathTextField,
             podCiComboBox,
