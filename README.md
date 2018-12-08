@@ -1,6 +1,6 @@
 # Kubernetes Task Plugin
 
-<img src="https://cdn.rawgit.com/clarive/cla-kubernetes-plugin/master/public/icon/kubernetes.svg?sanitize=true" alt="Kubernetes Plugin" title="Kubernetes Plugin" width="120" height="120">
+<img src="https://cdn.jsdelivr.net/gh/clarive/cla-kubernetes-plugin@master/public/icon/kubernetes.svg?sanitize=true" alt="Kubernetes Plugin" title="Kubernetes Plugin" width="120" height="120">
 
 Kubernetes plugin will allow you to create new pods remotely from a Clarive instance.
 
